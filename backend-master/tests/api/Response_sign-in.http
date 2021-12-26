@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 694
+ETag: W/"2b6-Y5QuY3X4SbY7fOSICPN4gssgTcU"
+Date: Sat, 25 Dec 2021 07:49:31 GMT
+Connection: close
+
+{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY0MDQxODU3MSwibmJmIjoxNjQwNDE4NTcxLCJleHAiOjE2NzE5NTQ1NzEsImlzcyI6ImJrLW4ifQ.DSqQtrrhYUzkSOcA83lLp8pIMTlNcmQqIJaBxNHQq7A","user":{"id":1,"email":"user1@gmail.com","full_name":"bot 1","mssv":"20180001","password":"$2a$10$X.uLxMQeDOpWxoxUpMKIzeKMPCh.HK4CbweRGkveqgst04SQ9rYTO","gender":1,"birthday":"2000-03-01T17:00:00.000Z","province":"Thành phố  Hà Nội","district":"Đông Anh","status":1,"cover_url":null,"slogan":"Trói em bằng cà vạt","location":"....","created_at":"2021-12-24T16:58:46.000Z","updated_at":"2021-12-24T16:58:46.000Z","avatar":"http://localhost:3002/public/images/default_avatar.jpg"}}

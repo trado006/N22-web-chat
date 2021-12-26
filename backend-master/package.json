@@ -1,0 +1,39 @@
+{
+  "name": "nhom20",
+  "version": "1.0.0",
+  "description": "Công nghệ web nhóm 22",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha tests --timeout=15000",
+    "dev": "env TZ='UTC' nodemon index.js",
+    "migrate:run": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "seed:run": "knex seed:run"
+  },
+  "author": "nhom22",
+  "private": true,
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.16",
+    "mysql": "^2.18.1",
+    "objection": "^2.2.18",
+    "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "mocha": "^8.0.1",
+    "nodemon": "^2.0.15",
+    "sinon": "^9.0.2"
+  }
+}
