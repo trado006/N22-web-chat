@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../components/head/Head', {title: 'chat app'}) %>
+<style>
+    body{
+        margin: 0px;
+        padding: 0px;
+        background: #f0f2f5;
+    }
+</style>
+<body>
+    <%- include('../components/topbar/Topbar') %>
+    <%- include('../components/my-page/Banner') %>
+    <div class="container_page">
+        <div class="page_main_container">
+            <div class="user_friend_info">
+                <%- include('../components/my-page/UserInfo') %>
+            </div>
+            <div class="w-5">
+                <%- include('../components/my-page/CreatePost') %>
+                <%- include('../components/my-page/MyPost') %>
+            </div>
+        </div>
+        <script>
+            axios.get('/my-page')
+            .then(function(result){
+                let userInfo = result.data;
+                switch(userInfo.gender){
+                    case 1: userInfo.gender_name = 'male'; break;
+                    case 2: userInfo.gender_name = 'female'; break;
+                    case 0: userInfo.gender_name = 'other'; break;
+                }
+                console.log(userInfo);
+                document.getElementById('profileBannerImage').setAttribute('src', userInfo.cover);
+                document.getElementById('bannerAvatarImage').setAttribute('src', userInfo.avatar);
+                document.getElementById('u-name').innerText = userInfo.full_name;
+
+                document.getElementById('userinfo-full_name-input').value = userInfo.full_name;
+                document.getElementById('userinfo-email-input').value = userInfo.email;
+                document.getElementById('userinfo-mssv-input').value = userInfo.mssv;
+                document.getElementById('userinfo-gender-input').value = userInfo.gender_name;
+                document.getElementById('userinfo-province-input').value = userInfo.province;
+                document.getElementById('userinfo-district-input').value = userInfo.district;
+                document.getElementById('userinfo-slogan-input').value = userInfo.slogan;
+                document.getElementById('userinfo-birthday-input').value = userInfo.birthday;
+
+                document.getElementById('userinfo-mssv').innerText = userInfo.mssv;
+                document.getElementById('userinfo-district').innerText = userInfo.district;
+                document.getElementById('userinfo-email').innerText = userInfo.email;
+                document.getElementById('userinfo-gender').innerText = userInfo.gender_name;
+
+                document.getElementById('createPostAvatarImage').setAttribute('src', userInfo.avatar);
+            }).catch(function(err){
+                console.log(err);
+            });
+
+            axios.get('/my-posts').then((res) => {
+                res.data.forEach(postInfo => {
+                    posts = document.getElementById('myPostContainer');
+                    let render = renderPost(postInfo);
+                    posts.innerHTML += render;
+                    renderActionPost(postInfo.id);
+                });
+            }).catch((e) => {
+                console.log(e);
+            });
+
+        </script>
+    </div>
+    <style>
+        .container_page {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .page_main_container {
+            width: 100%;
+            margin-top: 20px;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .user_friend_info {
+            width: 50%;
+        }
+        .w-5 {
+            width: 50%;
+        }
+    </style>
+</body>
+</html>

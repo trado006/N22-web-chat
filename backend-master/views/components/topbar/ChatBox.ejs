@@ -1,0 +1,147 @@
+<style>
+    .ChatBoxContainer {
+        width: 300px;
+        height: 400px;
+        border: 1px solid lightgray;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        display-regular: flex;
+        display: none;
+        flex-direction: column;
+        padding: 10px;
+        position: absolute;
+        top: 40px;
+        right: 0px;
+        z-index: 2;
+        background: white;
+    }
+    
+    .ChatBoxBottom {
+        flex-grow: 1;
+        overflow: auto;
+        border: 1px solid lightgray;
+    }
+    
+    .CloseChatBox {
+        text-align: right;
+    }
+    
+    .ChatBoxSearch {
+        padding-bottom: 5px;
+    }
+    
+    .ChatBoxSearch input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 25px;
+        border: 1px solid black;
+        outline: 0px;
+    }
+    
+    .ChatBoxItem {
+        display: flex;
+        height: 50px;
+        padding: 5px;
+        flex-direction: row;
+        border-bottom: 1px solid lightgray;
+    }
+    
+    .ChatBoxItem:hover {
+        background: lightgray;
+    }
+    
+    .ChatBoxItemLeft {
+        width: 50px;
+    }
+    
+    .ChatBoxItemLeft img {
+        height: 50px;
+        width: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+        background-color: lime;
+    }
+    
+    .ChatBoxItemRight {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+    }
+    
+    .ChatBoxItemRight-Top {
+        height: 20px;
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .ChatBoxItemRight-Bottom {
+        height: 30px;
+    }
+    
+    .ChatBoxItemTitle {
+        flex-grow: 1;
+        height: 20px;
+        line-height: 20px;
+        font-size: 20px;
+        overflow: hidden;
+    }
+    
+    .ChatBoxItemTime {
+        align-self: flex-end;
+        font-size: 13px;
+    }
+    
+    .ChatBoxItemContent {
+        height: 30px;
+        font-size: 15px;
+        overflow: hidden;
+    }
+    
+    .ChatBoxActive {
+        font-weight: bold;
+        color: seagreen;
+    }
+</style>
+
+<div class="ChatBoxContainer" id="topbarChatBoxContainer">
+    <div class="ChatBoxTop">
+        <div class="CloseChatBox">
+            <a onclick="closeChatBox()"><i class="fa fa-close"></i></a>
+        </div>
+        <div class="ChatBoxSearch">
+            <input type="search" name="" id="" placeholder="Input to search">
+        </div>
+    </div>
+    <div class="ChatBoxBottom">
+        <div class="ChatBoxList" id="topbarChatBoxList">
+            <div class="ChatBoxItem ChatBoxActive">
+                <div class="ChatBoxItemLeft">
+                    <img src="./avatar.jpg" alt="">
+                </div>
+                <div class="ChatBoxItemRight">
+                    <div class="ChatBoxItemRight-Top">
+                        <div class="ChatBoxItemTitle">Title</div>
+                        <div class="ChatBoxItemTime">Time</div>
+                    </div>
+                    <div class="ChatBoxItemRight-Bottom">
+                        <div class="ChatBoxItemContent">Content</div>
+                    </div>
+                </div>
+            </div>
+            <div class="ChatBoxItem">
+                <div class="ChatBoxItemLeft">
+                    <img src="./avatar.jpg" alt="">
+                </div>
+                <div class="ChatBoxItemRight">
+                    <div class="ChatBoxItemRight-Top">
+                        <div class="ChatBoxItemTitle">Title</div>
+                        <div class="ChatBoxItemTime">Time</div>
+                    </div>
+                    <div class="ChatBoxItemRight-Bottom">
+                        <div class="ChatBoxItemContent">Content</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

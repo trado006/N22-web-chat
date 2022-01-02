@@ -19,15 +19,15 @@ async function validation(postInfo) {
 }
 
 async function getMyPosts(req, res) {
-  const postInfo = {
-    userId: req.user.id,
-    offset: req.query.offset,
-    limit: req.query.limit,
-  };
+//   const postInfo = {
+//     userId: req.user.id,
+//     offset: req.query.offset,
+//     limit: req.query.limit,
+//   };
 
-  await validation(postInfo);
+//   await validation(postInfo);
 
-  const response = await postsService.getMyPosts(postInfo);
+  const response = await postsService.getMyPosts(req.user.id);
   return res.status(200).send(response);
 }
 

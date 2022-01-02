@@ -1,0 +1,305 @@
+<style>
+    .mb-2 {
+        margin-bottom: 16px;
+    }
+    .p20 {
+        padding: 20px;
+    }
+    .alignCenter {
+        align-items: center;
+    }
+    .flex {
+        display: flex;
+    }
+    .avatar_main {
+        height: 3rem;
+        width: 3rem;
+        border-radius: 100%;
+        object-fit: cover;
+        background-color: pink;
+        margin-right: 20px;
+    }
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+    }
+    .bold {
+        font-weight: bold;
+    }
+    .secondary-text {
+        color: #65676b;
+    }
+    .mt-1 {
+        margin-top: 8px;
+    }
+    .secondary-text {
+        color: #65676b;
+    }
+    .mb-1 {
+        margin-bottom: 8px;
+    }
+    .relative {
+        position: relative;
+    }
+    .justify-around {
+        justify-content: space-around;
+    }
+    .flex-1 {
+        flex: 1;
+    }
+    .justifyCenter {
+        justify-content: center;
+    }
+    .mr-1 {
+        margin-right: 8px;
+    }
+    .smallIcon {
+        height: 20px;
+        width: 20px;
+        object-fit: cover;
+    }
+    .reactionContainer {
+        position: absolute;
+        width: 300px;
+        left: 0;
+        top: -40px;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 10px;
+        border-radius: 50px;
+        display: none;
+    }
+    .reactionIcon {
+        width: calc(16% - 5px);
+        border-radius: 1000px;
+        cursor: pointer;
+    }
+    .icon_btn_custom:hover .reactionContainer {
+        display: block;
+    }
+    .reactionIcon:hover {
+        transform: scale(1.75);
+    }
+    .blue-color{
+        color: mediumblue;
+    }
+    .smallAvatar {
+        height: 2.2rem;
+        width: 2.2rem;
+        border-radius: 100%;
+        object-fit: cover;
+        background-color: pink;
+        margin-right: 10px;
+    }
+    .commentContent {
+        background-color: #f0f2f5;
+        padding: 8px;
+        word-break: break-word;
+    }
+    .CommentPostContainer{
+        border: 1px solid lightgray;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .icon_btn_custom:hover{
+        background: mediumspringgreen;
+    }
+    .inputComment {
+        background: #f0f2f5;
+        padding-left: 15px;
+        padding-right: 15px;
+        outline: 0px;
+        border: 0px;
+        border-radius: 10px;
+        height: 40px;
+    }
+    .imgPost_main {
+        max-height: 500px;
+        width: 100%;
+        object-fit: cover;
+    }
+</style>
+<div class="mt-2" id="myPostContainer">
+</div>
+<script>
+    function formatLocalDateTime(datetime){
+        date = new Date(datetime);
+        return date.getHours() + ':' + date.getMinutes() + ", " +date.toLocaleDateString();
+    }
+    const LIKE_ICONS = [
+        ``,
+        `/public/like.gif`,
+        `/public/haha.gif`,
+        `/public/angry.gif`,
+        `/public/sad.gif`,
+        `/public/love.gif`,
+        `/public/wow.gif`,
+    ];
+    const LIKE_NAMES = ['', 'Thích', 'Ha ha', 'Phẫn nộ', 'Buồn', 'Yêu thương', 'Wow' ];
+    function renderActionPost(post_id){
+        let post = document.getElementById('action-post-'+post_id);
+        let likes = JSON.parse(post.getAttribute('likes'));
+        let me = JSON.parse(post.getAttribute('me'));
+        let count = [0,0,0,0,0,0,0];
+        let likeView = "";
+        let likeInfo = "";
+        likes.forEach( (item, index) => {
+            count[item.type]++;
+            if(index==0) likeInfo += item.user.full_name;
+            if(index==1) likeInfo += (", " + item.user.full_name);
+        });
+        if(likes.length-2>0){
+            likeInfo += ` và ${likes.length-2} người khác`;
+        }
+        if(me){
+            count[me.type]++;
+            likeInfo += ` và bạn`;
+            if(!likes.length) likeInfo = 'bạn';
+        }
+        count.forEach((item, index)=>{
+            if(item){
+                likeView += `<div class="mr-1"><span>${item}<span><img src="${LIKE_ICONS[index]}" class="smallIcon"></div>`;
+            }
+        })
+        post.innerHTML = `
+        <div class="mt-1 flex alignCenter">
+            ${likeView}
+            <div class="secondary-text">
+            ${likeInfo}
+            </div>
+        </div>`;
+    }
+
+    var renderPost = (data) => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const avatar = user.avatar;
+        const name = user.full_name;
+        const me = data.me;
+        console.log(data);
+            return `
+            <div class="custom_box p20 mb-2">
+                <div class="flex alignCenter">
+                    <img src="${avatar}" class="avatar_main">
+                    <div class="flex-column">
+                        <div class="bold">${name}</div>
+                        <div class="mt-1 secondary-text">
+                        ${formatLocalDateTime(data.created_at)}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-1">
+                    <div class="breakContent mt-1">${data.content}</div>
+                    <div>
+                        ${data.image
+                            ? `<img src="${data.image}" alt="img" class="imgPost_main mt-1" />`
+                            : ''}
+                    </div>
+                </div>
+
+                <action-post likes='${JSON.stringify(data.likes)}'  ${data.me ? `me='${JSON.stringify(data.me)}'` : ''} id='action-post-${data.id}'>
+
+                </action-post>
+
+                <hr class="mt-1 mb-1">
+
+                <div class="flex alignCenter justify-around relative">
+                    <div id="likePost" class="flex alignCenter justifyCenter flex-1 icon_btn_custom">
+                        <div class="reactionContainer custom_box p2">
+                            <img src="/public/like.gif" class="reactionIcon" onclick="likePost(${data.id}, 1)">
+                            <img src="/public/haha.gif" class="reactionIcon" onclick="likePost(${data.id}, 2)">
+                            <img src="/public/angry.gif" class="reactionIcon" onclick="likePost(${data.id}, 3)">
+                            <img src="/public/sad.gif" class="reactionIcon" onclick="likePost(${data.id}, 4)">
+                            <img src="/public/love.gif" class="reactionIcon" onclick="likePost(${data.id}, 5)">
+                            <img src="/public/wow.gif" class="reactionIcon" onclick="likePost(${data.id}, 6)">
+                        </div>
+
+                        <div id="like-btn-${data.id}" class="flex alignCenter">
+                        <i class="fa fa-thumbs-o-up fa-lg mr-1" aria-hidden="true"></i>
+                        <p class="text-control ${me? 'blue-color':''}">${me? LIKE_NAMES[me.type] : 'Thích' }</p>
+                        </div>
+                    </div>
+
+                    <div class="flex alignCenter justifyCenter flex-1 icon_btn_custom" onclick="displayComment(${data.id})">
+                        <i class="fa fa-comments-o fa-lg mr-1" aria-hidden="true"></i>
+                        <p class="text-control">Bình luận</p>
+                    </div>
+
+                    <div id="sharePost1" class="flex alignCenter justifyCenter flex-1 icon_btn_custom">
+                        <i class="fa fa-share-square-o fa-lg mr-1" aria-hidden="true"></i>
+                        <p class="text-control">Chia sẻ</p>
+                    </div>
+                </div>
+
+                <div id="commentPost${data.id}">
+                </div>
+
+            </div> 
+            `;
+    }
+    const displayComment = (postId) => {
+        axios.get(`/posts/${postId}/comment`)
+        .then((result)=>{
+            const container = document.getElementById('commentPost' + postId);
+            let data = result.data.reverse();
+            let render = data.map((item, index) => {
+                return `
+                <div class="mt-1 flex alignCenter">
+                    <img src="${item.user.avatar}" class="smallAvatar">
+                    <div class="commentContent">
+                    <div class="bold">${item.user.full_name}</div>
+                    ${item.content}
+                    </div>
+                </div>
+                `;
+            }).join("");
+            container.innerHTML = `<div class="CommentPostContainer">` + render
+                                    + `<div id="commentPostFirst${postId}"></div> </div>`;
+            container.innerHTML += 
+            `<div class="mt-1 flex alignCenter">
+                <input class="searchUserInput inputComment flex-1" placeholder="Viết bình luận..." onkeypress="newComment(event, ${postId})">
+            </div>`;
+        }).catch((err)=>{
+            console.log(err);
+        })
+    }
+    const newComment = (e, postId) => {
+        if (e.keyCode == 13 && e.target.value.length > 0) {
+            const container = document.getElementById('commentPostFirst' + postId);
+            const myComment = document.createElement("div");
+            myComment.setAttribute("class", "w100 flex alignCenter");
+            myComment.innerHTML = "Loading....";
+            container.appendChild(myComment);
+
+            axios.post('/posts/comment', {
+                postId: postId,
+                content: e.target.value,
+            }).then((res) => {
+                const user = JSON.parse(localStorage.getItem('user'));
+                myComment.innerHTML = '<div class="mt-1 flex alignCenter"><img src="' + user.avatar + '" class="smallAvatar" /><div class="commentContent"><div class="bold">' + user.full_name + '</div>' + e.target.value + '</div></div>';
+                e.target.value = "";
+            }).catch((e) => {
+                container.removeChild(myComment);
+            })
+        }
+    }
+
+    const likePost = (postId, type) => {
+        const btnLike = document.getElementById("like-btn-" + postId);
+        const actionPost = document.getElementById("action-post-" + postId);
+        actionPost.setAttribute("me", JSON.stringify({ type }));
+        
+        renderActionPost(postId);
+        let title = LIKE_NAMES[type];
+        btnLike.innerHTML = `<i class="fa fa-thumbs-o-up fa-lg mr-1" aria-hidden="true"></i><p class="text-control blue-color">${title}</p>`;
+        
+        axios.post('/posts/like', {
+          postId, type,
+        }).then((res) => {
+          console.log(res);
+        }).catch((error) => {
+          alert(error.response.data ? error.response.data.message : 'Có lỗi xảy ra vui lòng thử lại');
+        })
+    }
+</script>
+

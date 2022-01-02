@@ -1,0 +1,284 @@
+<style>
+    .modal {
+    display: none;
+    position: fixed;
+    z-index: 5;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    }
+    .modal-content-update-info {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 600px;
+    max-height: 80vh;
+    overflow: auto;
+    }
+</style>
+<div class="modal" id="updateInfoContainer">
+    <div class="modal-content-update-info">
+
+        <style type="text/css">
+            .container {
+                background-color: white;
+                margin: auto;
+                width: 500px;
+
+                padding: 25px 30px;
+            }
+
+            .container .title {
+                font-size: 25px;
+                font-weight: 500;
+            }
+
+            .container form {
+                margin: 20px 0 12px 0;
+            }
+
+            .input-box .details {
+                font-weight: 500;
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            .input-box input {
+                height: 30px;
+                width: 100%;
+                outline: none;
+                border: 1px solid black;
+                padding-left: 15px;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            form .button {
+                margin: 4px;
+                padding: 5px 15px;
+                outline: none;
+                color: #fff;
+                border: none;
+                font-size: 18px;
+                font-weight: 500;
+                border-radius: 5px;
+                letter-spacing: 1px;
+                background: linear-gradient(135deg, #71b7e6, #9b59b6);
+
+            }
+
+            form .button:hover {
+                background: #9b59b6;
+            }
+        </style>
+
+        <div class="container">
+            <div style="text-align: right;">
+                <a onclick="closeUpdateInfo()">
+                    <i class="fa fa-times icon-control" aria-hidden="true"></i>
+                </a>
+            </div>
+            <div class="title">
+                <span>Update </span>
+            </div>
+
+            <form onsubmit="return updateInfo()">
+                <div class="input-box">
+                    <span class="details">
+                        Full Name
+                    </span>
+                    <input id="userinfo-full_name-input" type="text" name="full_name" placeholder="Your name" required=""
+                        value="undefined">
+                </div>
+                <div class="input-box">
+                    <span class="details">
+                        Email
+                    </span>
+                    <input id="userinfo-email-input" class="r1" type="email" name="email" required="" readonly="" value="undefined">
+                </div>
+                <div class="input-box">
+                    <div class="row">
+                        <span class="details">
+                            Mã sinh viên
+                        </span>
+                        <input id="userinfo-mssv-input" type="text" name="mssv" required="" readonly="" value="undefined">
+                        <span class="details">
+                            Giới tính
+                        </span>
+                        <input id="userinfo-gender-input" type="text" name="gender" required="" readonly="" value="Other">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <span class="details">
+                        Tỉnh
+                    </span>
+                    <input id="userinfo-province-input" type="text" name="province" placeholder="Your province" value="">
+                </div>
+                <div class="input-box">
+                    <span class="details">
+                        Huyện
+                    </span>
+                    <input id="userinfo-district-input" type="text" name="district" placeholder="Your district" value="">
+                </div>
+                <div class="input-box">
+                    <span class="details">
+                        Slogan
+                    </span>
+                    <input id="userinfo-slogan-input" type="text" name="slogan" placeholder="Your slogan" value="">
+                </div>
+                <div class="input-box">
+                    <span class="details">
+                        Ngày sinh
+                    </span>
+                    <input id="userinfo-birthday-input" type="text" name="birthday" required="" readonly="" value="undefined">
+                </div>
+
+                <input class="button" id="submitBtn" type="submit" value="Update">
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    a {
+        text-decoration: none;
+        color: #050505;
+        font-weight: 600;
+    }
+
+    h2 {
+        margin: 10px 0px;
+    }
+
+    .padding-left10 {
+        padding-left: 10px;
+    }
+
+    .userInfo {
+        width: 340px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05);
+        border: 1px gray;
+        border-radius: 8px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-right: 20px;
+        padding-bottom: 20px;
+    }
+
+    .infor {
+        margin: 10px 0px;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .detailInfoBtn {
+        border: none;
+        width: inherit;
+        border-radius: 5px;
+        height: 35px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="userInfo">
+    <div class="intro">
+        <h2>Giới thiệu</h2>
+    </div>
+    <div class="">
+        <div class="infor">
+            <span>
+                <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/id4jdGYPaIP.png" alt="" height="20" width="20">
+            </span>
+            <span class="padding-left10">Mã sinh viên:
+                <a id="userinfo-mssv">
+                    undefined
+                </a>
+            </span>
+        </div>
+
+        <div class="infor">
+            <span>
+                <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yk/r/X_t0JnueVu-.png" alt="" height="20" width="20">
+            </span>
+            <span class="padding-left10" dir="auto">Sống tại:
+                <a tabindex="0" id="userinfo-district">
+
+                </a>
+            </span>
+        </div>
+
+        <div class="infor">
+            <span>
+                <img src="https://www.gstatic.com/images/icons/material/system/1x/mail_black_20dp.png" alt=""
+                    height="20" width="20">
+                <span class="padding-left10" dir="auto">Email:
+                    <a href="#" tabindex="0">
+                        <span id="userinfo-email">undefined</span>
+                    </a>
+                </span>
+            </span>
+        </div>
+
+        <div class="infor">
+            <span>
+                <img src="https://www.gstatic.com/images/icons/material/system/1x/info_black_20dp.png" width="20"
+                    height="20">
+            </span>
+            <span class="padding-left10" dir="auto">Giới tính:
+                <a href="#" tabindex="0" id="userinfo-gender">
+                    Other
+                </a>
+            </span>
+        </div>
+    </div>
+
+    <button class="pointer detailInfoBtn" onclick="callUpdateInfo()">
+        Xem chi tiết và chỉnh sửa
+    </button>
+</div>
+<script>
+    function callUpdateInfo(){
+        document.getElementById('updateInfoContainer').style.display = 'block';
+    }
+    function closeUpdateInfo(){
+        document.getElementById('updateInfoContainer').style.display = 'none';
+    }
+    const updateInfo = () => {
+        const email = document.getElementsByName('email')[0].value;
+        const fullName = document.getElementsByName('full_name')[0].value;
+        const mssv = document.getElementsByName('mssv')[0].value;
+        const province = document.getElementsByName("province")[0].value;
+        const district = document.getElementsByName('district')[0].value;
+        const slogan = document.getElementsByName('slogan')[0].value;
+        document.getElementById("submitBtn").disabled = true;
+        document.getElementById("submitBtn").setAttribute('value','Loading');
+        axios.post('/me/update-info', {
+          email, fullName, mssv, province, district, slogan
+        }).then((result) => {
+          alert('Thay đổi thông tin thành công');
+          document.getElementById("submitBtn").disabled = false;
+          document.getElementById("submitBtn").setAttribute('value', 'Update');
+          window.location.href = '/me';
+        }).catch((error) => {
+          console.log(error);
+          document.getElementById("submitBtn").disabled = false;
+          document.getElementById("submitBtn").setAttribute('value', 'Update');
+          alert('Có lỗi xảy ra vui lòng thử lại');
+        })
+
+        return false;
+    }
+</script>
+<friend-list>
+</friend-list>

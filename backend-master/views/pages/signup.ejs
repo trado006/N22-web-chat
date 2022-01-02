@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../components/head/Head',{title:'Sign in chat app'}) %>
+<style type="text/css">
+    .container{
+      max-width: 600px;
+      width: 100%;
+      padding: 25px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .container .title{
+      font-size: 25px;
+      font-weight: 500;
+    }
+    
+    .container form .user-details{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 20px 0 12px 0;
+    }
+    form .user-details .input-box{
+      margin-bottom: 15px;
+      width: calc(100% / 2 - 20px);
+    }
+    .user-details .input-box .details{
+      font-weight: 500;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .user-details .input-box input{
+      box-sizing: border-box;
+      height: 25px;
+      width: 100%;
+      outline: none;
+      border: 1px solid black;
+      padding-left: 15px;
+      border-bottom-width: 2px;
+    }
+    
+    form .gender-details .gender-title{
+      font-size: 15px;
+      font-weight: 500;
+    }
+    form .gender-details .category{
+      display: flex;
+      width: 80%;
+      margin: 14px 0;
+      justify-content: space-between;
+    }
+    .gender-details .category{
+      display: flex;
+      align-items: center;
+    }
+
+    #submitBtn {
+      padding: 10px;
+      width: 100%;
+      outline: none;
+      color: #fff;
+      border: none;
+        background: #007bff;
+    }
+  
+    #submitBtn:disabled {
+      background-color: #bbbec1;
+    }
+  </style>
+<style>
+    body {
+        position: fixed;
+        padding: 0px;
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <div class="title">Registration</div>
+        <form onsubmit="return false">
+          <div class="user-details">
+            <div class="input-box">
+              <span class="details">
+                Full Name
+              </span>
+              <input type="text" placeholder="Enter your name" id="fullName" required>
+            </div>
+            <div class="input-box">
+              <span class="details">
+                Id student
+              </span>
+              <input type="text" placeholder="Enter your Id student" id="mssv" required>
+            </div>
+            <div class="input-box">
+              <span class="details">
+                Email
+              </span>
+              <input type="text" placeholder="Enter your email" id="email" required>
+            </div>
+            <div class="input-box">
+              <span class="details">
+                Password
+              </span>
+              <input type="password" placeholder="Enter your password" id="password" required>
+            </div>
+            <div class="input-box">
+              <span class="details">
+                Confirm Password
+              </span>
+              <input type="password" placeholder="Confirm your password" id="confirmPassword" required>
+            </div>
+            <div class="input-box">
+              <span class="details">
+                Province
+              </span>
+              <input type="text" placeholder="Province" id="province">
+            </div>
+            <div class="input-box">
+              <span class="details">
+                district
+              </span>
+              <input type="text" placeholder="district" id="district">
+            </div>
+          </div>
+          <div class="gender-details">
+            <div class="category">
+                <div>
+                    <input type="radio" id="male" name="fav_language" value="Male" required>
+                  <label for="male">Male</label>
+                </div>
+              <div>
+                <input type="radio" id="female" name="fav_language" value="Female" required>
+              <label for="famale">Female</label>
+              </div>
+              <div>
+                <input type="radio" id="other" name="fav_language" value="Other" required>
+              <label for="other">Other</label>
+              </div>
+              
+            </div>
+          </div>
+
+          <button class="button" id="submitBtn" onclick="signUp()">
+            Register
+          </button>
+        </form>
+      </div>
+</body>
+<script>
+    const signUp = () => {
+      const email = document.getElementById('email').value;
+      const fullName = document.getElementById('fullName').value;
+      const mssv = document.getElementById('mssv').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const province = document.getElementById('province').value;
+      const district = document.getElementById('district').value;
+      const male = document.getElementById('male').checked;
+      const feMale = document.getElementById('female').checked;
+      const other = document.getElementById('other').checked;
+      let gender = 2;
+      if(male) {
+        gender = 0;
+      }
+      else if(feMale){
+        gender = 1;
+      }
+      var filter = /^([a-zA-Z0-9_\.\-])+\@gmail.com.vn/; 
+      if (!filter.test(email)) { 
+          alert("Hãy nhập email theo đúng định dạng. Ví dụ: miphong@gmail.com.vn");
+        return false; 
+      }
+      if (password !== confirmPassword) {
+        alert("Confirm Password not same");
+        return false;
+      }
+
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("submitBtn").innerHTML = 'Loading';
+      console.log(document.getElementById("submitBtn"));
+
+      axios.post('sign-up', {
+        email, fullName, mssv, password, confirmPassword, gender
+      }).then((result) => {
+        window.location.href = '/sign-in';
+      }).catch((error) => {
+        document.getElementById("submitBtn").disabled = false;
+        document.getElementById("submitBtn").innerHTML = 'Register';
+        alert("Has eror");
+      })
+      return false;
+    }
+
+</script>
+</html>
+

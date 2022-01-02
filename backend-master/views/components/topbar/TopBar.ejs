@@ -1,0 +1,497 @@
+<%- include('../modal/Modal') %>
+<script>
+    function clock_getTime(datetime) {
+        date = new Date(datetime);
+        return date.getHours() + ':' + date.getMinutes();
+    }
+</script>
+<style>
+    .TopBarContainer {
+        display: flex;
+        height: 40px;
+        border-bottom: 1px solid lightgray;
+        justify-content: space-between;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    
+    .TopBarLeft {
+        display: flex;
+    }
+    
+    .TopBarIcon {
+        width: 150px;
+        line-height: 40px;
+        background: dodgerblue;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+    }
+    
+    .TopBarSearchInput {
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+    }
+    
+    .TopBarSearchInput input {
+        box-sizing: border-box;
+        width: 200px;
+        height: 25px;
+        border: 1px solid black;
+        outline: 0px;
+    }
+    
+    .TopBarSearchInput input:hover {
+        outline: 0px;
+    }
+    
+    .TopBarSearchButton {
+        display: flex;
+        align-items: center;
+    }
+    
+    .TopBarSearchButton button {
+        box-sizing: border-box;
+        height: 25px;
+        background: #1f2029;
+        border: 1px solid #1f2029;
+        color: white;
+        font-size: 15px;
+        margin-left: 10px;
+    }
+    
+    .TopBarRight {
+        display: flex;
+        margin-right: 20px;
+    }
+    
+    .TopBarPartner,
+    .TopBarRequest,
+    .TopBarAvatar,
+    .TopBarUserName,
+    .TopBarOut {
+        display: flex;
+        position: relative;
+        font-size: 25px;
+        align-items: center;
+        padding: 0px 10px;
+    }
+    
+    .TopBarRight .badge {
+        align-self: flex-start;
+        width: 14px;
+        height: 14px;
+        font-size: 12px;
+        line-height: 14px;
+        text-align: center;
+        background: crimson;
+        color: white;
+        border: 1px solid crimson;
+        border-radius: 50%;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+    }
+    
+    .AvatarFrame {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .AvatarFrame img {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+        border-radius: 50%;
+        background: chartreuse;
+    }
+    
+    .TopBarUserName {
+        font-size: 15px;
+    }
+    
+    .TopBarOut {
+        font-size: 25px;
+    }
+    
+    a:hover,
+    button:hover {
+        cursor: pointer;
+    }
+</style>
+<%- include('./Message') %>
+<div class="TopBarContainer">
+    <div class="TopBarLeft">
+        <div class="TopBarIcon">BK - N22</div>
+        <div class="TopBarSearchInput">
+            <input type="search" name="searchInput" id="topbarSearchInput" placeholder="Input friend's name" />
+        </div>
+        <div class="TopBarSearchButton">
+            <button type="button" onclick="topbarSubmitSearch()"><i class="fa fa-search"></i> Search</button>
+        </div>
+    </div>
+    <div class="TopBarRight">
+        <div class="TopBarPartner">
+            <a onclick="openChatBox()">
+                <i class="fa fa-comments-o" style="color: black;"></i>
+            </a>
+            <span class="badge" id="topbarPartnerBadge">0</span>
+            <%- include('./ChatBox') %>
+        </div>
+        <div class="TopBarRequest">
+            <a onclick="topbarRequestOpen()">
+                <i class="fa fa-users" style="color: black;"></i>
+            </a>
+            <span class="badge" id="topbarRequestBadge">0</span>
+            <%- include('./Request') %>
+        </div>
+        <div class="TopBarAvatar">
+            <div class="AvatarFrame">
+                <img id="topbarAvatar" src="./avatar.jpg">
+            </div>
+        </div>
+        <div class="TopBarUserName" id="topbarUserName">
+            Guest
+        </div>
+        <div class="TopBarOut">
+            <a onclick="signOut()"><i class="fa fa-sign-out"></i></a>
+        </div>
+    </div>
+</div>
+<script>
+    if (!localStorage.getItem('user')) {
+        window.location.href = '/sign-in';
+    }
+    const socket = io('http://localhost:3002/');
+    /***Message****/
+    var topbarMessageContainer = document.getElementById('topbarMessageContainer');
+    topbarMessageContainer.data = {};
+    topbarMessageContainer.reload = function() {
+        let data = topbarMessageContainer.data;
+        if (data) {
+            document.getElementById('topbarMessageAvatar').setAttribute('src', data.avatar);
+            document.getElementById('topbarMessageTitle').innerText = data.full_name;
+        }
+        let render = (data && data.messages) ? data.messages.map((message) => {
+            if (message.my) {
+                return `
+        <div class="MessageOfMe">
+            <span style="flex-grow: 1;"></span>
+            <div>${message.content}</div>
+        </div>
+        `;
+            } else {
+                return `
+        <div class="MessageOfPartner">
+            <div>${message.content}</div>
+        </div>
+        `;
+            }
+        }).join("") : "";
+        document.getElementById('topbarMessages').innerHTML = render;
+    }
+    topbarMessageSend = function() {
+        let userId = topbarChatBoxContainer.is_show;
+        let message = document.getElementById('topbarMessageInput').value;
+        if (!userId || !message) {
+            modal_show("no message to send");
+            return false;
+        }
+        socket.emit('new message', {
+            token: JSON.parse(localStorage.getItem('token')),
+            userId,
+            message
+        }, (result) => {
+            console.log(result);
+            topbarChatBoxContainer.data.forEach(item => {
+                if (item.messenger.partner_id == result.receiver_id) {
+                    item.messenger.last_msg = result.id;
+                    let last_msg = {
+                        id: result.id,
+                        content: result.content,
+                        my: 1,
+                        created_at: result.created_at,
+                    }
+                    item.last_msg = last_msg;
+                    topbarChatBoxContainer.reload();
+                    topbarMessageContainer.data.messages.push(last_msg);
+                    topbarMessageContainer.reload();
+                    document.getElementById('topbarMessageInput').value = '';
+                }
+            });
+        })
+    }
+
+    /***ChatBox****/
+    var topbarChatBoxContainer = document.getElementById('topbarChatBoxContainer');
+    topbarChatBoxContainer.data = [];
+    topbarChatBoxContainer.is_show = 0;
+    topbarChatBoxContainer.reload = () => {
+        let data = topbarChatBoxContainer.data;
+        let count = 0;
+        let render = data ? data.map((item, index) => {
+            is_new = item.messenger.is_new;
+            if (is_new) count++;
+            if (item.messenger.last_msg) {
+                content = item.last_msg.my ? 'me:' + item.last_msg.content : item.last_msg.content;
+                time = clock_getTime(item.last_msg.created_at);
+            } else {
+                content = "";
+                time = "";
+            }
+            return `
+    <div class="ChatBoxItem ${is_new? "ChatBoxActive" : "" }" id="topbarChatBoxItem${index}" onclick="openMessages(${index})">
+        <div class="ChatBoxItemLeft">
+            <img src="${item.info.imgSign}">
+        </div>
+        <div class="ChatBoxItemRight">
+            <div class="ChatBoxItemRight-Top">
+                <div class="ChatBoxItemTitle">${item.info.full_name}</div>
+                <div class="ChatBoxItemTime">${time}</div>
+            </div>
+            <div class="ChatBoxItemRight-Bottom">
+                <div class="ChatBoxItemContent">${content}</div>
+            </div>
+        </div>
+    </div>
+    `
+        }).join('') : '';
+        document.getElementById('topbarChatBoxList').innerHTML = render;
+
+        document.getElementById('topbarPartnerBadge').innerText = count;
+    }
+
+    function closeChatBox() {
+        document.getElementById('topbarChatBoxContainer').style.display = 'none';
+    }
+
+    function openChatBox() {
+        document.getElementById('topbarChatBoxContainer').style.display = 'flex';
+    }
+    /*****Request*****/
+    var topbarRequestContainer = document.getElementById('topbarRequestContainer');
+    topbarRequestContainer.data = [];
+    topbarRequestContainer.reload = function() {
+        let data = topbarRequestContainer.data;
+        document.getElementById('topbarRequestBadge').innerText = data ? data.length : 0;
+        let render = data ? data.map((req, index) => (
+            `
+    <div class="RequestItem">
+        <div class="RequestItemLeft">
+            <img src="${req.sender.avatar}">
+        </div>
+        <div class="RequestItemRight">
+            <div class="RequestItemRight-Top">
+                <div class="RequestItemTitle">${req.sender.full_name}</div>
+                <div class="RequestItemTime">${clock_getTime(req.created_at)}</div>
+            </div>
+            <div class="RequestItemRight-Bottom">
+                <button class="AcceptRequestButton" id="acceptFriendRequestBtn${req.sender_id}" onclick="acceptRequest(${req.sender_id}, ${index})">Accept</button>
+                <button class="RejectRequestButton" id="rejectFriendRequestBtn${req.sender_id}" onclick="rejectRequest(${req.sender_id}, ${req.id}, ${index})">Reject</button>
+            </div>
+        </div>
+    </div>
+    `
+        )).join('') : '';
+        document.getElementById('topbarRequestList').innerHTML = render;
+    }
+    const acceptRequest = (userId, index) => {
+        console.log(userId)
+        document.getElementById("acceptFriendRequestBtn" + userId).disabled = true;
+
+        socket.emit('acceptFriendRequest', {
+            token: JSON.parse(localStorage.getItem('token')),
+            userId,
+        }, (result) => {
+            console.log(result);
+            if (result) {
+                modal_show("Friend request is accept!");
+                const data = topbarRequestContainer.data;
+                if (data) {
+                    data.splice(index, 1);
+                    topbarRequestContainer.reload();
+                }
+                topbarChatBoxContainer.data.unshift(result);
+                topbarChatBoxContainer.reload();
+            } else {
+                document.getElementById("acceptFriendRequestBtn" + userId).disabled = false;
+            }
+        })
+    }
+    const rejectRequest = (userId, id, index) => {
+        console.log(userId);
+        document.getElementById("rejectFriendRequestBtn" + userId).disabled = true;
+
+        axios.post('/friends/reject', {
+            'friendRequestId': id,
+        }).then((result) => {
+            console.log('isSuccess');
+            modal_show("remove friend request is okey");
+            const data = topbarRequestContainer.data;
+            if (data) {
+                data.splice(index, 1);
+                topbarRequestContainer.reload();
+            }
+        }).catch((err) => {
+            document.getElementById("rejectFriendRequestBtn" + userId).disabled = false;
+        });
+    }
+
+    function topbarRequestOpen() {
+        document.getElementsByClassName('RequestContainer')[0].style.display = 'flex';
+    }
+    document.getElementById('CloseRequestButton').addEventListener('click', function() {
+        //console.log('hello');
+        document.getElementById('topbarRequestContainer').style.display = 'none';
+    });
+
+    /****end***/
+
+
+    const signOut = () => {
+        localStorage.clear();
+        window.location.href = '/sign-in'
+    }
+    const topbarSubmitSearch = () => {
+        const keyword = document.getElementById("topbarSearchInput").value;
+        //console.log(keyword);
+        window.location.href = '/search?keyword=' + keyword;
+    }
+
+    socket.on('connect', function() {
+        socket.emit('addUser', {
+            token: JSON.parse(localStorage.getItem('token')),
+        });
+    })
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    //console.log(user);
+    document.getElementById('topbarAvatar').setAttribute('src', user.avatar);
+    document.getElementById('topbarUserName').innerText = user.full_name;
+
+    socket.on('friendRequest', (data) => {
+        modal_show("Bạn nhận được lời mời kết bạn từ <strong>" + data.sender.full_name + "</strong>");
+
+        if (topbarRequestContainer) {
+            console.log(data);
+            console.log('has request');
+            const array = topbarRequestContainer.data;
+            array.splice(0, 0, data);
+            topbarRequestContainer.reload();
+        }
+    });
+    socket.on('friendRequestAccept', (result) => {
+        modal_show(`Lời mời kết bạn đến <strong>${result.info.full_name}</strong> đã được chấp nhận`);
+        topbarChatBoxContainer.data.unshift(result);
+        topbarChatBoxContainer.reload();
+    });
+
+    socket.on('newMessage', (userInfo, message) => {
+        topbarChatBoxContainer.data.forEach(item => {
+            partner_id = message.sender_id;
+            if (item.messenger.partner_id == message.sender_id) {
+                last_msg = {
+                    id: message.id,
+                    content: message.content,
+                    my: 0,
+                    created_at: message.created_at,
+                }
+                if (topbarChatBoxContainer.is_show) {
+                    topbarMessageContainer.data.messages.push(last_msg);
+                    topbarMessageContainer.reload();
+                    axios.put(`messengers/friends/${partner_id}/reset/${message.id}`)
+                        .then((res) => {
+                            console.log(res);
+                            item.messenger.is_new = 0;
+                            topbarChatBoxContainer.reload();
+                            //document.getElementById('topbarChatBoxItem' + item).classList.remove('ChatBoxActive');
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
+                } else {
+                    item.messenger.is_new = 1;
+                }
+                item.messenger.last_msg = message.id;
+                item.last_msg = last_msg;
+                topbarChatBoxContainer.reload();
+            }
+        });
+    })
+
+    axios.get('friends/request')
+        .then((res) => {
+            console.log(res.data);
+            friendRequests = res.data.friendRequest;
+            topbarRequestContainer.data = friendRequests;
+            topbarRequestContainer.reload();
+        }).catch((err) => {
+            console.log(err);
+            console.log(err.data)
+        });
+    axios.get('/messengers').then((res) => {
+        res.data.sort(function(a, b) {
+            if (!a.messenger.last_msg) return false;
+            if (!b.messenger.last_msg) return true;
+            time_a = a.last_msg.created_at;
+            time_b = b.last_msg.created_at;
+            return time_a < time_b;
+        });
+        console.log(res.data);
+        topbarChatBoxContainer.data = res.data;
+        topbarChatBoxContainer.reload();
+    }).catch((e) => {
+        console.log(e);
+    });
+
+    function openMessages(index) {
+        let item = topbarChatBoxContainer.data[index];
+        let partner_id = item.messenger.partner_id;
+        let is_new = item.messenger.is_new;
+        let last_msg = item.messenger.last_msg;
+
+        topbarChatBoxContainer.is_show = partner_id;
+
+        axios.get(`messages/friends/${partner_id}/${last_msg}`)
+            .then((res) => {
+                console.log(res.data);
+                topbarMessageContainer.data = res.data;
+                topbarMessageContainer.reload();
+                topbarMessageContainer.style.display = "flex";
+                topbarChatBoxContainer.style.display = "none";
+            }).catch((e) => {
+                console.log(e);
+            });
+
+        if (is_new) {
+            axios.put(`messengers/friends/${partner_id}/reset/${last_msg}`)
+                .then((res) => {
+                    console.log(res);
+                    item.messenger.is_new = 0;
+                    topbarChatBoxContainer.reload();
+                    //document.getElementById('topbarChatBoxItem' + item).classList.remove('ChatBoxActive');
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        }
+    }
+
+    function closeMessages() {
+        topbarChatBoxContainer.is_show = 0;
+        topbarMessageContainer.style.display = 'none';
+    }
+
+    function socket_newFriendReqest( userId ){
+        let token = JSON.parse(localStorage.getItem('token'));
+        socket.emit("newFriendRequest", { token, userId }, function(result){
+            if(result){
+                modal_show('send request is okey');
+            }
+        });
+    }
+</script>

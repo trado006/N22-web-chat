@@ -1,0 +1,281 @@
+<style type="text/css">
+    #profile-upper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex: 1;
+        background-color: lightskyblue;
+        border-bottom: 1px solid lightgray;
+        padding-bottom: 30px;
+    }
+
+    #profile-d {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    #profile-banner-image {
+        width: 100%;
+        height: 360px;
+        max-width: 1200px;
+    }
+
+    #profile-banner-image img {
+        width: 100%;
+        object-fit: cover;
+        height: 360px;
+    }
+
+    #profile-pic {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        margin-top: 28px;
+        display: flex;
+        position: relative;
+        box-shadow: 0 0 0 5px white;
+        justify-content: center;
+        align-items: center;
+        background-color: lightgreen;
+    }
+
+    .picture {
+        height: 0px;
+        margin-top: 20px;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .picture i {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        right: 40px;
+        bottom: 12px;
+    }
+
+    #profile-pic img {
+        width: 90%;
+        height: 90%;
+        border-radius: 100%;
+        object-fit: cover;
+    }
+
+    #u-name {
+        color: black;
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    #edit-profile {
+        position: relative;
+        left: inherit;
+        bottom: 25%;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    #edit-profile i {
+        display: block;
+        color: rgba(255, 255, 255, 0.3);
+    }
+</style>
+<style>
+    .avatar-upload {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .avatar-preview {
+        width: 192px;
+        height: 192px;
+        position: relative;
+        border-radius: 100%;
+        border: 6px solid #F8F8F8;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    .avatar-preview>div {
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    #imagePreview {
+        background-color: limegreen;
+    }
+
+    .labelUpload {
+        cursor: pointer;
+        padding: 5px 10px;
+        background-color: limegreen;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .btnModal {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .uploadBtn:disabled {
+        background-color: #0000ff8f;
+    }
+
+    .uploadBtn {
+        background-color: blue;
+    }
+
+    change-avatar {
+        position: absolute;
+        bottom: 17px;
+        right: 17px;
+    }
+</style>
+<style type="text/css">
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        border-radius: 0.5rem;
+        max-height: 80vh;
+        overflow: auto;
+    }
+
+    .max500 {
+        max-width: 500px;
+    }
+
+    .mt-2 {
+        margin-top: 16px;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .display-none {
+        display: none;
+    }
+
+    .ml-1 {
+        margin-left: 8px;
+    }
+</style>
+
+<div>
+    <div id="profile-upper">
+        <div id="profile-banner-image">
+            <img id="profileBannerImage" src="" alt="Banner image">
+        </div>
+        <div id="profile-d">
+            <div class="picture">
+                <div id="profile-pic">
+                    <img id="bannerAvatarImage" src="" alt="Avatar image">
+                    <change-avatar>
+                        <img src="/public/change-avatar.png" data-visualcompletion="css-img" class="camera_icon"
+                            onclick="openUploadAvatarModal()"
+                            style="z-index: 99; background-position: 0px -88px; background-size: auto; width: 20px; height: 20px; background-repeat: no-repeat; display: inline-block;">
+
+                        <div class="modal" id="modalUploadAvatar">
+                            <div class="modal-content max500">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        <input type="file" id="imageUpload" accept=".png, .jpg, .jpeg"
+                                            class="display-none" onchange="changeFile(this)">
+                                        <label for="imageUpload" class="labelUpload">
+                                            Tải ảnh lên
+                                        </label>
+                                    </div>
+
+                                    <div class="avatar-preview mt-2">
+                                        <div id="imagePreview">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex mt-2">
+                                        <button class="btnModal uploadBtn" disabled="" id="uploadAvatarBtn"
+                                            onclick="uploadAvatar()">
+                                            Tải lên
+                                        </button>
+                                        <button class="ml-1 btnModal" onclick="closeUploadAvatarModal()">
+                                            Đóng
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </change-avatar>
+                </div>
+            </div>
+            <div id="u-name">undefined</div>
+        </div>
+    </div>
+</div>
+<script>
+    const changeFile = (input) => {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            const imagePreview = document.getElementById("imagePreview");
+            document.getElementById("uploadAvatarBtn").disabled = false;
+
+            reader.onload = function (e) {
+                imagePreview.style.backgroundImage = 'url(' + e.target.result + ')';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    const uploadAvatar = () => {
+        const img = document.getElementById("imageUpload").files[0];
+        let formData = new FormData();
+        document.getElementById("uploadAvatarBtn").disabled = true;
+
+        formData.append("mainAvatar", img);
+        axios.post('/me/update-avatar', formData).then((res) => {
+            window.location.href = '/me';
+        }).catch((err) => {
+            console.log(err);
+            document.getElementById("uploadAvatarBtn").disabled = false;
+            modal_show('Update avatar không thành công');
+        });
+    }
+
+    const closeUploadAvatarModal = () => {
+        document.getElementById("modalUploadAvatar").style.display = "none";
+    }
+
+    const openUploadAvatarModal = () => {
+        document.getElementById("modalUploadAvatar").style.display = "block";
+    }
+</script>

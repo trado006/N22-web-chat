@@ -28,7 +28,7 @@ exports.updatePost = async function updatePost( postId, image_url ){
     }
 }
 
-exports.getMyPosts = async ({ userId, limit, offset }) => {
+exports.getMyPosts = async ( userId ) => {
   const posts = await Post.query()
     .where({ user_id: userId })
     .andWhereNot('status', postStatusEnum.CLOSED)
@@ -44,14 +44,12 @@ exports.getMyPosts = async ({ userId, limit, offset }) => {
     .modifyGraph('me', (builder) => {
       builder.where('user_id', userId);
     })
-    .limit(limit)
-    .offset(offset)
     .orderBy('id', 'desc');
 
   const response = posts.map((post) => {
     let imgSign = getFullUrl(post.image_url);
     return {
-      ...post, image_name: imgSign,
+      ...post, image: imgSign,
     };
   });
 
@@ -96,7 +94,7 @@ exports.comment = async ({
     .insert({ content, post_id: postId, user_id: userId });
 };
 
-exports.getPosts = async ({ userId, limit, offset }) => {
+exports.getPosts = async ( userId ) => {
   const posts = await Post.query()
     .whereNot({ user_id: userId })
     .andWhereNot('status', postStatusEnum.CLOSED)
@@ -116,8 +114,6 @@ exports.getPosts = async ({ userId, limit, offset }) => {
     .modifyGraph('me', (builder) => {
       builder.where('user_id', userId);
     })
-    .limit(limit)
-    .offset(offset)
     .orderBy('id', 'desc');
   console.log(posts);
   const res = posts.map((post) => ({

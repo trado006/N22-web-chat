@@ -1,0 +1,146 @@
+<style>
+    .MessageContainer {
+        width: 300px;
+        height: 400px;
+        border: 1px solid lightgray;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        position: fixed;
+        bottom: 0px;
+        right: 50px;
+        display-regular: flex;
+        display: none;
+        flex-direction: column;
+        padding: 10px;
+        background: white;
+        z-index: 1;
+    }
+    
+    .MessageCenter {
+        flex-grow: 1;
+        overflow-y: auto;
+        border: 1px solid lightgray;
+    }
+    
+    .MessageClose {
+        text-align: right;
+    }
+    
+    .MessegeTopBar {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 5px;
+    }
+    
+    .MessageAvatar img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+        background: limegreen;
+    }
+    
+    .MessageTitle {
+        margin-left: 10px;
+        flex-grow: 1;
+        font-size: 20px;
+        line-height: 40px;
+        overflow: hidden;
+    }
+    
+    .MessageOfMe {
+        margin: 5px;
+        margin-left: 50px;
+        display: flex;
+    }
+    
+    .MessageOfMe div {
+        display: inline-block;
+        right: 0px;
+        padding: 5px 10px;
+        background: lightseagreen;
+    }
+    
+    .MessageOfPartner {
+        margin: 5px;
+        margin-right: 50px;
+    }
+    
+    .MessageOfPartner div {
+        display: inline-block;
+        background: lightgray;
+        padding: 5px 10px;
+    }
+    
+    .MessageBottom {
+        display: flex;
+        padding-top: 5px;
+        flex-direction: row;
+    }
+    
+    .MessageBottom input {
+        box-sizing: border-box;
+        height: 25px;
+        flex-grow: 1;
+        border: 1px solid black;
+        margin-right: 5px;
+        outline: 0px;
+    }
+    
+    .MessageBottom i {
+        box-sizing: border-box;
+        background: limegreen;
+        height: 25px;
+        padding: 2px 5px;
+        font-size: 20px;
+    }
+</style>
+
+<div class="MessageContainer" id="topbarMessageContainer">
+    <div class="MessageTop">
+        <div class="MessageClose">
+            <a onclick="closeMessages()"><i class="fa fa-close"></i></a>
+        </div>
+        <div class="MessegeTopBar">
+            <div class="MessageAvatar">
+                <img id="topbarMessageAvatar" src="./avatar.jpg" alt="">
+            </div>
+            <div class="MessageTitle" id="topbarMessageTitle">Title</div>
+        </div>
+    </div>
+    <div class="MessageCenter">
+        <div class="Messages" id="topbarMessages">
+            <div class="MessageOfMe">
+                <span style="flex-grow: 1;"></span>
+                <div>tin nhắn của tôi</div>
+            </div>
+            <div class="MessageOfPartner">
+                Tin nhắn của đối tác
+            </div>
+            <div class="MessageOfMe">
+                <span style="flex-grow: 1;"></span>
+                <div>tin nhắn của tôi</div>
+            </div>
+            <div class="MessageOfMe">
+                <span style="flex-grow: 1;"></span>
+                <div>tin nhắn của tôi</div>
+            </div>
+            <div class="MessageOfMe">
+                <span style="flex-grow: 1;"></span>
+                <div>tin nhắn của tôi</div>
+            </div>
+            <div class="MessageOfPartner">
+                Tin nhắn của đối tác
+            </div>
+            <div class="MessageOfPartner">
+                Tin nhắn của đối tác
+            </div>
+        </div>
+    </div>
+    <div class="MessageBottom">
+        <input type="text" name="" id="topbarMessageInput" placeholder="Input to send">
+        <a onclick="topbarMessageSend()">
+            <i class="fa fa-send-o"></i>
+        </a>
+
+    </div>
+</div>
