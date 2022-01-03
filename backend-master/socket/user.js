@@ -16,7 +16,6 @@ exports.getUser = async(token) => {
 
 exports.addUser = async(token, socketId) => {
     const user = await this.getUser(token);
-    console.log(user);
     if (user) {
         users[user.id] = {
             online: true,

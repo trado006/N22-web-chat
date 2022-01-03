@@ -51,7 +51,7 @@ exports.getUserInformation = async ({ userId, myId }) => {
 };
 
 exports.getUserPosts = async ({
-  userId, limit, offset, myId,
+  userId, myId
 }) => {
   const posts = await Post.query()
     .where({ user_id: userId })
@@ -69,8 +69,6 @@ exports.getUserPosts = async ({
     .modifyGraph('me', (builder) => {
       builder.where('user_id', myId).select('id', 'type');
     })
-    .limit(limit)
-    .offset(offset)
     .orderBy('id', 'desc');
 
   const response = posts.map((post) => {

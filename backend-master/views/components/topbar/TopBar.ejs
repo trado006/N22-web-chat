@@ -486,7 +486,7 @@
         topbarMessageContainer.style.display = 'none';
     }
 
-    function socket_newFriendReqest( userId ){
+    function socket_newFriendRequest( userId ){
         let token = JSON.parse(localStorage.getItem('token'));
         socket.emit("newFriendRequest", { token, userId }, function(result){
             if(result){

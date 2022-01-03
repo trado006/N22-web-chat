@@ -1,5 +1,5 @@
 <style>
-    .modal {
+    .general-modal {
         display: none;
         position: fixed;
         z-index: 99;
@@ -18,7 +18,7 @@
         /* Black w/ opacity */
     }
     
-    .modal-content {
+    .general-modal-content {
         background-color: #fefefe;
         margin: auto;
         padding: 20px;
@@ -26,15 +26,15 @@
         min-width: 400px;
     }
     
-    .closeModal {
+    .closeGeneralModal {
         color: #aaaaaa;
         float: right;
         font-size: 28px;
         font-weight: bold;
     }
     
-    .closeModal:hover,
-    .closeModal:focus {
+    .closeGeneralModal:hover,
+    .closeGeneralModal:focus {
         color: #000;
         text-decoration: none;
         cursor: pointer;
@@ -42,34 +42,34 @@
 </style>
 
 <!-- The Modal -->
-<div id="myModal" class="modal">
+<div id="myGeneralModal" class="general-modal">
 
     <!-- Modal content -->
-    <div class="modal-content">
-        <span class="closeModal">&times;</span>
-        <div id="myModalContent">Some text in the Modal..</div>
+    <div class="general-modal-content">
+        <span class="closeGeneralModal">&times;</span>
+        <div id="myGeneralModalContent">Some text in the Modal..</div>
     </div>
 
 </div>
 
 <script>
     // Get the modal
-    var modal = document.getElementById("myModal");
-    var modalContent = document.getElementById("myModalContent");
-    // Get the <span> element that closeModals the modal
-    var span = document.getElementsByClassName("closeModal")[0];
+    var modal = document.getElementById("myGeneralModal");
+    var modalContent = document.getElementById("myGeneralModalContent");
+    // Get the <span> element that closeGeneralModals the modal
+    var span = document.getElementsByClassName("closeGeneralModal")[0];
 
     function modal_show(content) {
         modalContent.innerHTML = content;
         modal.style.display = "flex";
     }
 
-    // When the user clicks on <span> (x), closeModal the modal
+    // When the user clicks on <span> (x), closeGeneralModal the modal
     span.onclick = function() {
         modal.style.display = "none";
     }
 
-    // When the user clicks anywhere outside of the modal, closeModal it
+    // When the user clicks anywhere outside of the modal, closeGeneralModal it
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";

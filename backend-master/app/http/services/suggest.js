@@ -32,7 +32,7 @@ exports.suggestMyFriend = async ({
 };
 
 exports.suggestUser = async ({
-  keyword, offset, limit, userId,
+  keyword, userId,
 }) => {
   const userSuggest = await User.query()
     .whereNot('id', userId)
@@ -45,9 +45,7 @@ exports.suggestUser = async ({
     .withGraphFetched('meReceiveRequest')
     .modifyGraph('meReceiveRequest', (builder) => {
       builder.where('sender_id', userId).select('id', 'status');
-    })
-    .limit(limit)
-    .offset(offset);
+    });
 
   const users = userSuggest.map((user) => {
     let imgSign = getFullUrl(user.avatar_url) || getFullUrl(process.env.DEFAULT_AVATAR);

@@ -19,16 +19,18 @@ async function validation(searchInfo) {
 }
 
 async function suggestUser(req, res) {
-  const searchInfo = {
-    userId: req.user.id,
-    keyword: req.query.keyword,
-    offset: req.query.offset,
-    limit: req.query.limit,
-  };
+//   const searchInfo = {
+//     userId: req.user.id,
+//     keyword: req.query.keyword,
+//     offset: req.query.offset,
+//     limit: req.query.limit,
+//   };
 
-  await validation(searchInfo);
-
-  const responseData = await suggestService.suggestUser(searchInfo);
+//   await validation(searchInfo);
+  keyword = req.query.keyword;
+  userId = req.user.id;
+  console.log(keyword);
+  const responseData = await suggestService.suggestUser({keyword, userId});
   return res.status(200).send(responseData);
 }
 

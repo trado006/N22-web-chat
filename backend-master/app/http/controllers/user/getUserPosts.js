@@ -18,16 +18,18 @@ async function validation(userInfo) {
   }
 }
 async function getUserPosts(req, res) {
-  const userInfo = {
-    userId: Number(req.params.userId),
-    offset: parseInt(req.query.offset),
-    limit: parseInt(req.query.limit),
-    myId: parseInt(req.user.id),
-  };
+//   const userInfo = {
+//     userId: Number(req.params.userId),
+//     offset: parseInt(req.query.offset),
+//     limit: parseInt(req.query.limit),
+//     myId: parseInt(req.user.id),
+//   };
 
-  await validation(userInfo);
+  //await validation(userInfo);
+  userId = req.params.userId;
+  myId = req.user.id;
 
-  const responseData = await userService.getUserPosts(userInfo);
+  const responseData = await userService.getUserPosts({ userId, myId });
 
   return res.status(200).send(responseData);
 }

@@ -3,7 +3,6 @@ const { abort } = require('../../../helpers/error');
 
 async function getMessengers(req, res) {
     const data = await messengersService.getMessengers(req.user.id);
-    console.log(data);
     return res.status(201).json(data);
 }
 

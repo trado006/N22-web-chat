@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('../components/head/Head', {title: 'chat app'}) %>
+    <style>
+        body{
+            margin: 0px;
+            padding: 0px;
+            background: #f0f2f5;
+        }
+    </style>
+<body>
+    <%- include('../components/topbar/Topbar') %>
+    <search-template>
+        <style>
+            .mb-2 {
+                margin-bottom: 16px;
+            }
+            .mt-2 {
+                margin-top: 16px;
+            }
+            .justifyCenter {
+                justify-content: center;
+            }
+            .flex {
+                display: flex;
+            }
+            .max500 {
+                max-width: 500px;
+                width: 100%;
+            }
+            .mt-2 {
+                margin-top: 16px;
+            }
+            .p20 {
+                padding: 20px;
+            }
+            .justify-between {
+                justify-content: space-between;
+            }
+            .alignCenter {
+                align-items: center;
+            }
+            .flex {
+                display: flex;
+            }
+            .custom_box {
+                border-radius: 0.5rem;
+                background-color: #fff;
+            }
+            .avatar_main {
+                height: 3rem;
+                width: 3rem;
+                border-radius: 100%;
+                object-fit: cover;
+                background-color: pink;
+                margin-right: 20px;
+            }
+            a[is="router-link"] {
+                color: inherit;
+                text-decoration: none;
+            }
+        </style>
+        <div class="mt-2 flex justifyCenter mb-2">
+            <div class="max500" id="peopleListContainer">
+                
+    
+                
+            </div>
+        </div>
+    </search-template>
+</body>
+</html>
+
+
+
+
+<script>
+    axios.get('/suggest/users?keyword=<%= keyword %>')
+    .then((result)=>{
+        console.log(result.data);
+        userInfos = result.data;
+        let render = userInfos? userInfos.map((item, index) => {
+            return `
+            <div class="custom_box p20 flex alignCenter justify-between mt-2">
+                <a href="/users/${item.id}" class="image-contain link-control flex" is="router-link">
+                    <img src="${item.avatar}" class="avatar_main">
+                    <div class="infor">
+                        <div class="name text-control">${item.full_name}</div>
+                        <div class="relation text-control">MSSV: ${item.mssv}</div>
+                        <div class="relation text-control">Email: ${item.email}</div>
+                    </div>
+                </a>
+
+                <div class="icon-contain">
+                </div>
+            </div>
+            `
+        }).join("") : "";
+        document.getElementById('peopleListContainer').innerHTML = `<h2 class="title text-control">Mọi người</h2>`;
+        document.getElementById('peopleListContainer').innerHTML += render; 
+    })
+</script>

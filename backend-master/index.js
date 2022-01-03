@@ -62,18 +62,17 @@ io.on('connection', (socket) => {
 
     socket.on('addUser', ({ token }) => {
         console.log('addUser');
-        console.log(token);
         addUser(token, socket.id);
     });
 
     socket.on('new message', async(data, cb) => {
+        console.log('socket.io: new message');
         const res = await newMessage(data);
 
         if (res.me && res.user) {
             socket.to(res.user.socketId).emit('newMessage', res.me, res.message);
             cb(res.message);
         } else {
-            console.log(res.message);
             if (res) cb(res.message);
             cb(false);
         }
